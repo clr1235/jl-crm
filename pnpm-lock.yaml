@@ -13,6 +13,7 @@ specifiers:
   eslint-plugin-vue: ^9.19.2
   husky: ^8.0.0
   lint-staged: ^15.2.0
+  pinia: ^2.1.7
   prettier: ^3.1.1
   typescript: ^5.2.2
   unplugin-auto-import: ^0.17.3
@@ -23,6 +24,7 @@ specifiers:
 
 dependencies:
   element-plus: 2.4.4_vue@3.4.4
+  pinia: 2.1.7_typescript@5.3.3+vue@3.4.4
   vue: 3.4.4_typescript@5.3.3
 
 devDependencies:
@@ -943,6 +945,10 @@ packages:
     dependencies:
       '@vue/compiler-dom': 3.4.4
       '@vue/shared': 3.4.4
+
+  /@vue/devtools-api/6.5.1:
+    resolution: {integrity: sha512-+KpckaAQyfbvshdDW5xQylLni1asvNSGme1JFs8I1+/H5pHEhqUKMEQD/qn3Nx5+/nycBq11qAEi8lk+LXI2dA==}
+    dev: false
 
   /@vue/language-core/1.8.27_typescript@5.3.3:
     resolution: {integrity: sha512-L8Kc27VdQserNaCUNiSFdDl9LWT24ly8Hpwf1ECy3aFb9m6bDhBGQYOujDm21N7EW3moKIOKEanQwe1q5BK+mA==}
@@ -2594,6 +2600,24 @@ packages:
     engines: {node: '>=0.10'}
     hasBin: true
     dev: true
+
+  /pinia/2.1.7_typescript@5.3.3+vue@3.4.4:
+    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.4.0
+      typescript: '>=4.4.4'
+      vue: ^2.6.14 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      typescript:
+        optional: true
+    dependencies:
+      '@vue/devtools-api': 6.5.1
+      typescript: 5.3.3
+      vue: 3.4.4_typescript@5.3.3
+      vue-demi: 0.14.6_vue@3.4.4
+    dev: false
 
   /pkg-types/1.0.3:
     resolution: {integrity: sha512-nN7pYi0AQqJnoLPC9eHFQ8AcyaixBUOwvqc5TDnIKCMEE6I0y8P7OKA7fPexsXGCGxQDl/cmrLAp26LhcwxZ4A==}
