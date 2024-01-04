@@ -9,3 +9,6 @@ declare module '*.ts' {
 	const content: any
 	export default content
 }
+
+declare module 'crypto-js'
+declare module 'js-cookie'

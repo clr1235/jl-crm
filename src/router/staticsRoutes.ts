@@ -6,14 +6,14 @@ const staticRoutes = [
 		redirect: '/404',
 		hidden: true,
 	},
-	// {
-	// 	path: '/login',
-	// 	name: 'login',
-	// 	meta: {
-	// 		title: '登录',
-	// 	},
-	// 	component: () => import(/* webpackChunkName: "login" */ '@/views/signUp/login/index.vue'),
-	// },
+	{
+		path: '/login',
+		name: 'login',
+		meta: {
+			title: '登录',
+		},
+		component: () => import(/* webpackChunkName: "login" */ '@/views/login/index.vue'),
+	},
 	// {
 	// 	index: '43',
 	// 	path: '/register',
