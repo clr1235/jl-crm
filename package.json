@@ -21,7 +21,8 @@
 		"normalize.css": "^8.0.1",
 		"pinia": "^2.1.7",
 		"vue": "^3.3.11",
-		"vue-router": "4"
+		"vue-router": "4",
+		"vue3-image-preview": "^0.2.7"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^18.4.3",

@@ -28,6 +28,7 @@ specifiers:
   vue: ^3.3.11
   vue-router: '4'
   vue-tsc: ^1.8.25
+  vue3-image-preview: ^0.2.7
 
 dependencies:
   axios: 1.6.4
@@ -38,6 +39,7 @@ dependencies:
   pinia: 2.1.7_typescript@5.3.3+vue@3.4.4
   vue: 3.4.4_typescript@5.3.3
   vue-router: 4.2.5_vue@3.4.4
+  vue3-image-preview: 0.2.7_vue@3.4.4
 
 devDependencies:
   '@commitlint/cli': 18.4.3_typescript@5.3.3
@@ -3420,6 +3422,14 @@ packages:
       '@vue/server-renderer': 3.4.4_vue@3.4.4
       '@vue/shared': 3.4.4
       typescript: 5.3.3
+
+  /vue3-image-preview/0.2.7_vue@3.4.4:
+    resolution: {integrity: sha512-XlHO6O8jFCz82+Q40rOfY2f2jCt+gnd3/NspqADVaAuoGP3GwTMVdU+iVkPUHQyDHlMeVSc/epNcsI1Varsadw==}
+    peerDependencies:
+      vue: ^3.2.45
+    dependencies:
+      vue: 3.4.4_typescript@5.3.3
+    dev: false
 
   /webpack-sources/3.2.3:
     resolution: {integrity: sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==}

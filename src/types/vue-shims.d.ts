@@ -12,3 +12,4 @@ declare module '*.ts' {
 
 declare module 'crypto-js'
 declare module 'js-cookie'
+declare module 'vue3-image-preview'
