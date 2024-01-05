@@ -11,7 +11,7 @@
 				}"
 			>
 				<div v-show="showRefresh" class="verify-refresh" style="z-index: 3" @click="refresh">
-					<i class="iconfont icon-refresh"></i>
+					<i class="verify-iconfont icon-refresh"></i>
 				</div>
 				<img
 					ref="canvas"
@@ -57,14 +57,14 @@
 		</div>
 	</div>
 </template>
-<script type="text/babel">
+<script lang="ts">
 /**
  * VerifyPoints
  * @description 点选
  * */
-import { resetSize, _code_chars, _code_color1, _code_color2 } from './../utils/util'
-import { aesEncrypt } from './../utils/ase'
-import { reqGet, reqCheck } from './../api/index'
+import { resetSize, _code_chars, _code_color1, _code_color2 } from '../utils/util'
+import { aesEncrypt } from '../utils/ase'
+import { reqGet, reqCheck } from '@/api/modules/user'
 
 export default {
 	name: 'VerifyPoints',
@@ -158,7 +158,8 @@ export default {
 			this.getPictrue()
 			this.$nextTick(() => {
 				this.setSize = this.resetSize(this) // 重新设置宽度高度
-				this.$parent.$emit('ready', this)
+				// NOTE this.$parent.$emit('ready', this)
+				this.$emit('ready', this)
 			})
 		},
 		canvasClick(e) {
@@ -190,13 +191,16 @@ export default {
 							this.bindingClick = false
 							if (this.mode == 'pop') {
 								setTimeout(() => {
-									this.$parent.clickShow = false
+									// NOTE this.$parent.clickShow = false
+									this.$emit('changeData', { dataKey: 'clickShow', data: false })
 									this.refresh()
 								}, 1500)
 							}
-							this.$parent.$emit('success', { captchaVerification })
+							// NOTE this.$parent.$emit('success', { captchaVerification })
+							this.$emit('success', { captchaVerification })
 						} else {
-							this.$parent.$emit('error', this)
+							// NOTE this.$parent.$emit('error', this)
+							this.$emit('error', this)
 							this.barAreaColor = '#d9534f'
 							this.barAreaBorderColor = '#d9534f'
 							this.text = '验证失败'
@@ -246,7 +250,6 @@ export default {
 			reqGet(data).then((res) => {
 				res = res.data.data
 				if (res.repCode == '0000') {
-					console.log(res)
 					this.pointBackImgBase = res.repData.originalImageBase64
 					this.backToken = res.repData.captchaToken
 					this.secretKey = res.repData.secretKey
@@ -269,7 +272,6 @@ export default {
 				const y = Math.round((155 * p.y) / parseInt(imgSize.imgHeight))
 				return { x, y }
 			})
-			// console.log(newPointArr,"newPointArr");
 			return newPointArr
 		},
 	},

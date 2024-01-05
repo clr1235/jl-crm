@@ -11,7 +11,7 @@
 						autoComplete="off"
 						:model="loginForm"
 						:rules="loginRules"
-						ref="loginForm"
+						ref="loginFormRef"
 						label-position="left"
 						label-width="0px"
 						class="card-box login-form"
@@ -23,9 +23,7 @@
 							</span>
 							<el-input
 								name="userName"
-								type="text"
 								v-model.trim="loginForm.userName"
-								autoComplete="off"
 								placeholder="用户"
 								@focus="handleActive(1)"
 								@input="userNameInput"
@@ -40,7 +38,7 @@
 							<el-input
 								name="password"
 								type="password"
-								@keyup.enter="handleLogin"
+								@keyup.enter="handleLogin(loginFormRef)"
 								@focus="handleActive(2)"
 								v-model.trim="loginForm.password"
 								autoComplete="new-password"
@@ -55,7 +53,7 @@
 								type="warning"
 								style="width: 100%"
 								:loading="loading"
-								@click.prevent="handleLogin"
+								@click.prevent="handleLogin(loginFormRef)"
 							>
 								{{ loading ? '登录中' : '登录' }}
 							</el-button>
@@ -82,23 +80,24 @@
 		<div class="footer">
 			{{ copyright }}
 		</div>
-		<!-- <Verify
-			@success="onSuccess"
+		<Verify
+			@verify-success="onSuccess"
 			:mode="'pop'"
-			:captchaType="'blockPuzzle'"
+			captchaType="blockPuzzle"
 			:imgSize="{ width: '330px', height: '155px' }"
-			ref="verify"
-		/> -->
+			ref="verifyRef"
+		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { reactive, ref, onBeforeMount } from 'vue'
+import { useRouter } from 'vue-router'
 import store from '@/store'
-import router from '@/router'
+
 import { userApi } from '@/api'
 import { uname, password } from '@/utils/crypto'
-// import Verify from '@/components/verifition/Verify.vue'
+import Verify from '@/components/verifition/Verify.vue'
 
 import logoImg from '@/assets/imgs/login/logo.png'
 
@@ -113,14 +112,37 @@ const loginForm = reactive({
 let logoUrl = ref('')
 let title = ref('建龙物流管理平台')
 let copyright = ref('')
-const loginRules = ref({
-	userName: [{ required: true, trigger: 'blur', validator: '' }],
-	password: [{ required: true, trigger: 'blur', validator: '' }],
+
+const loginFormRef = ref()
+const verifyRef = ref()
+
+const validatUserName = (rule: any, value: any, callback: any) => {
+	console.log(rule, 'ruless==')
+	if (value === '') {
+		callback(new Error('请输入用户名'))
+	} else {
+		callback()
+	}
+}
+const validatePass = (rule: any, value: any, callback: any) => {
+	console.log(rule, 'ruless==a a a a')
+	if (value === '') {
+		callback(new Error('请输入密码'))
+	} else {
+		callback()
+	}
+}
+const loginRules = reactive({
+	userName: [{ required: true, trigger: 'blur', validator: validatUserName }],
+	password: [{ required: true, trigger: 'blur', validator: validatePass }],
 })
 let activeClass = ref(1)
 let loading = ref(false)
 let captchaId = ref(0)
 let favicon = ref(null)
+
+// 拿到路由
+const router = useRouter()
 
 // 拿到userStore
 const userStore = store.useUserStore()
@@ -154,12 +176,19 @@ const changeFavicon = (url: any) => {
 	link.href = url
 	document.getElementsByTagName('head')[0].appendChild(link)
 }
-const handleLogin = () => {
-	userStore.login(loginForm)
+const handleLogin = async (formEl: any) => {
+	if (!formEl) return
+	await formEl.validate((valid: boolean) => {
+		if (valid) {
+			verifyRef.value.show()
+		} else {
+			return false
+		}
+	})
 }
 
 const handleActive = (num: any) => {
-	console.log(num)
+	activeClass.value = num
 }
 
 const userPwdInput = () => {}
@@ -187,7 +216,7 @@ const handleCodeSuccess = (captchaVerification: any) => {
 				userName: uname(KP, loginForm.userName.toLowerCase()),
 				password: password(KP, loginForm.password),
 				key: loginForm.key,
-				captchaId,
+				captchaId: captchaId.value,
 				captcha: loginForm.captcha,
 				checked: loginForm.checked,
 				captchaVerification,
@@ -195,19 +224,17 @@ const handleCodeSuccess = (captchaVerification: any) => {
 
 			userStore
 				.login(params)
-				.then((res: any) => {
-					if (res.data.code === 0) {
+				.then(({ code }) => {
+					if (code === 0) {
 						rememberUserName()
-						// 修改默认每次登录调到首页
-						router.push({ path: '/' })
-					} else if (res.data.code === 10007) {
+						// 登录之后跳转到首页
+						router.push({ name: 'home' })
+					} else if (code === 10007) {
 						loading.value = false
 						loginForm.captcha = ''
-						// this.getRandCode();
 					} else {
 						loading.value = false
 						loginForm.captcha = ''
-						// this.getRandCode();
 					}
 				})
 				.catch(() => {

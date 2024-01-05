@@ -38,3 +38,21 @@ export function getCrmAppInfo() {
 		method: 'get',
 	})
 }
+
+// 获取验证图片  以及captchaToken
+export function reqGet(data: any) {
+	return request({
+		url: '/crm/sys/getAjCaptcha',
+		method: 'post',
+		data,
+	})
+}
+
+// 滑动或者点选验证
+export function reqCheck(data: any) {
+	return request({
+		url: '/crm/sys/checkAjCaptcha',
+		method: 'post',
+		data,
+	})
+}

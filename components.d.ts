@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
 	export interface GlobalComponents {
+		copy: (typeof import('./src/components/verifition/Verify/VerifyPoints copy.vue'))['default']
 		ElButton: (typeof import('element-plus/es'))['ElButton']
 		ElCheckbox: (typeof import('element-plus/es'))['ElCheckbox']
 		ElCheckboxGroup: (typeof import('element-plus/es'))['ElCheckboxGroup']

@@ -12,7 +12,7 @@
 					style="width: 100%; height: 100%; display: block"
 				/>
 				<div v-show="showRefresh" class="verify-refresh" @click="refresh">
-					<i class="iconfont icon-refresh"></i>
+					<i class="verify-iconfont icon-refresh"></i>
 				</div>
 				<transition name="tips">
 					<span v-if="tipWords" class="verify-tips" :class="passFlag ? 'suc-bg' : 'err-bg'">{{
@@ -33,7 +33,7 @@
 					width: leftBarWidth !== undefined ? leftBarWidth : barSize.height,
 					height: barSize.height,
 					'border-color': leftBarBorderColor,
-					transaction: transitionWidth,
+					transition: transitionWidth,
 				}"
 			>
 				<span class="verify-msg" v-text="finishText"></span>
@@ -49,7 +49,7 @@
 					@touchstart="start"
 					@mousedown="start"
 				>
-					<i :class="['verify-icon iconfont', iconClass]" :style="{ color: iconColor }"></i>
+					<i :class="['verify-icon verify-iconfont', iconClass]" :style="{ color: iconColor }"></i>
 					<div
 						v-if="type === '2'"
 						class="verify-sub-block"
@@ -71,16 +71,15 @@
 		</div>
 	</div>
 </template>
-<script type="text/babel">
+<script type="text/babel" lang="ts">
 /**
  * VerifySlide
  * @description 滑块
  * */
-import { aesEncrypt } from './../utils/ase'
-import { resetSize } from './../utils/util'
-import { reqGet, reqCheck } from './../api/index'
+import { aesEncrypt } from '../utils/ase'
+import { resetSize } from '../utils/util'
+import { reqGet, reqCheck } from '@/api/modules/user'
 
-//  "captchaType":"blockPuzzle",
 export default {
 	name: 'VerifySlide',
 	props: {
@@ -135,6 +134,9 @@ export default {
 			type: String,
 			default: '',
 		},
+		successRefresh: {
+			type: Boolean,
+		},
 	},
 	data() {
 		return {
@@ -157,12 +159,12 @@ export default {
 			},
 			top: 0,
 			left: 0,
-			moveBlockLeft: undefined,
-			leftBarWidth: undefined,
+			moveBlockLeft: '',
+			leftBarWidth: '',
 			// 移动中样式
-			moveBlockBackgroundColor: undefined,
+			moveBlockBackgroundColor: '',
 			leftBarBorderColor: '#ddd',
-			iconColor: undefined,
+			iconColor: '',
 			iconClass: 'icon-right',
 			status: false, // 鼠标状态
 			isEnd: false, // 是够验证完成
@@ -184,6 +186,7 @@ export default {
 		type: {
 			immediate: true,
 			handler() {
+				console.log(123)
 				this.init()
 			},
 		},
@@ -193,7 +196,6 @@ export default {
 		this.$el.onselectstart = function () {
 			return false
 		}
-		console.log(this.defaultImg)
 	},
 	methods: {
 		init() {
@@ -202,9 +204,11 @@ export default {
 			this.$nextTick(() => {
 				const setSize = this.resetSize(this) // 重新设置宽度高度
 				for (const key in setSize) {
-					this.$set(this.setSize, key, setSize[key])
+					// NOTE this.$set(this.setSize, key, setSize[key])
+					this.setSize[key] = setSize[key]
 				}
-				this.$parent.$emit('ready', this)
+				// NOTE this.$parent.$emit('ready', this)
+				this.$emit('ready', this)
 			})
 
 			// eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -242,14 +246,15 @@ export default {
 		},
 
 		// 鼠标按下
-		start: function (e) {
+		start: function (e: any) {
 			e = e || window.event
+			let x = null
 			if (!e.touches) {
 				// 兼容PC端
-				let x = e.clientX
+				x = e.clientX
 			} else {
 				// 兼容移动端
-				let x = e.touches[0].pageX
+				x = e.touches[0].pageX
 			}
 			this.startLeft = Math.floor(x - this.barArea.getBoundingClientRect().left)
 			this.startMoveTime = +new Date() // 开始滑动的时间
@@ -263,23 +268,25 @@ export default {
 			}
 		},
 		// 鼠标移动
-		move: function (e) {
+		move: function (e: any) {
 			e = e || window.event
+			let x
 			if (this.status && this.isEnd == false) {
 				if (!e.touches) {
 					// 兼容PC端
-					let x = e.clientX
+					x = e.clientX
 				} else {
 					// 兼容移动端
-					let x = e.touches[0].pageX
+					x = e.touches[0].pageX
 				}
+
 				let bar_area_left = this.barArea.getBoundingClientRect().left
 				let move_block_left = x - bar_area_left // 小方块相对于父元素的left值
 				if (move_block_left >= this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2) {
 					move_block_left = this.barArea.offsetWidth - parseInt(parseInt(this.blockSize.width) / 2) - 2
 				}
-				if (move_block_left <= 0) {
-					move_block_left = parseInt(parseInt(this.blockSize.width) / 2)
+				if (move_block_left - this.startLeft <= 0) {
+					move_block_left = this.startLeft
 				}
 				// 拖动后小方块的left值
 				this.moveBlockLeft = move_block_left - this.startLeft + 'px'
@@ -289,9 +296,9 @@ export default {
 
 		// 鼠标松开
 		end: function () {
-			this.endMovetime = +new Date()
 			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			let _this = this
+			this.endMovetime = +new Date()
 			// 判断是否重合
 			if (this.status && this.isEnd == false) {
 				let moveLeftDistance = parseInt((this.moveBlockLeft || '').replace('px', ''))
@@ -303,7 +310,7 @@ export default {
 						: JSON.stringify({ x: moveLeftDistance, y: 5.0 }),
 					captchaToken: this.backToken,
 				}
-				reqCheck(data).then((res) => {
+				reqCheck(data).then((res: any) => {
 					res = res.data.data
 					if (res.repCode == '0000') {
 						this.moveBlockBackgroundColor = '#5cb85c'
@@ -314,7 +321,9 @@ export default {
 						this.isEnd = true
 						if (this.mode == 'pop') {
 							setTimeout(() => {
-								this.$parent.clickShow = false
+								// NOTE this.$parent.clickShow = false
+								this.$emit('changeData', { dataKey: 'clickShow', data: false })
+								console.log(2222)
 								this.refresh()
 							}, 1500)
 						}
@@ -328,8 +337,10 @@ export default {
 							: this.backToken + '---' + JSON.stringify({ x: moveLeftDistance, y: 5.0 })
 						setTimeout(() => {
 							this.tipWords = ''
-							this.$parent.closeBox()
-							this.$parent.$emit('success', { captchaVerification })
+							// NOTE this.$parent.closeBox()
+							// NOTE this.$parent.$emit('success', { captchaVerification })
+							this.successRefresh && this.$emit('closeBox')
+							this.$emit('success', { captchaVerification })
 						}, 1000)
 					} else {
 						this.moveBlockBackgroundColor = '#d9534f'
@@ -340,7 +351,8 @@ export default {
 						setTimeout(function () {
 							_this.refresh()
 						}, 1000)
-						this.$parent.$emit('error', this)
+						// NOTE this.$parent.$emit('error', this)
+						this.$emit('error', this)
 						this.tipWords = '验证失败'
 						setTimeout(() => {
 							this.tipWords = ''
@@ -382,7 +394,7 @@ export default {
 				clientUid: localStorage.getItem('slider'),
 				ts: Date.now(), // 现在的时间戳
 			}
-			reqGet(data).then((res) => {
+			reqGet(data).then((res: any) => {
 				res = res.data.data
 				if (res.repCode == '0000') {
 					this.backImgBase = res.repData.originalImageBase64

@@ -5,7 +5,16 @@ module.exports = {
 		es2021: true,
 		node: true,
 	},
-	parser: '@typescript-eslint/parser',
+	// parser: '@typescript-eslint/parser',
+	parser: 'vue-eslint-parser',
+	parserOptions: {
+		parser: '@typescript-eslint/parser',
+		ecmaVersion: 'latest',
+		sourceType: 'module',
+		ecmaFeatures: {
+			jsx: true,
+		},
+	},
 	extends: [
 		// 参考vuejs官方的eslint配置： https://eslint.vuejs.org/user-guide/#usage
 		'plugin:vue/vue3-recommended',
@@ -55,6 +64,7 @@ module.exports = {
 		// 对应上边的 plugin:@typescript-eslint/recommended
 		'@typescript-eslint/no-unused-vars': 'off',
 		'@typescript-eslint/no-explicit-any': 'off', // 允许使用any
+		'@typescript-eslint/no-this-alias': 'off',
 
 		// 对应上边的 prettier, plugin:prettier/recommended   这边的配置生效高于.prettier.config文件
 		'prettier/prettier': [
