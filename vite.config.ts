@@ -67,5 +67,22 @@ export default defineConfig({
 				comments: false, // 删除注释
 			},
 		},
+		// 通过() => import()形式加载的组件会自动分包，第三方插件需手动分包
+		rollupOptions: {
+			output: {
+				// 创建自定义的公共 chunk
+				manualChunks: {
+					vue: ['vue', 'pinia', 'vue-router'],
+					elementIcons: ['@element-plus/icons-vue'],
+				},
+				// js和css文件夹分离
+				// 对代码分割中产生的 chunk 自定义命名，其值也可以是一个函数，对每个 chunk 调用以返回匹配模式
+				chunkFileNames: 'dist/js/[name]-[hash].js',
+				// 用于指定 chunks 的入口文件模式，其值也可以是一个函数，对每个入口 chunk 调用以返回匹配模式
+				entryFileNames: 'dist/js/[name]-[hash].js',
+				// 自定义构建结果中的静态资源名称，或者值为一个函数，对每个资源调用以返回匹配模式
+				assetFileNames: 'dist/[ext]/[name]-[hash].[ext]',
+			},
+		},
 	},
 })

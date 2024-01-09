@@ -44,14 +44,13 @@ const staticRoutes = [
 		path: '/',
 		name: 'home',
 		component: Layout,
-		redirect: () => ({ name: 'dashboard' }),
+		redirect: () => ({ name: 'home' }),
 		children: [
 			{
 				path: '/home',
-				name: 'dashboard',
+				name: 'home',
 				meta: {
 					title: '系统首页',
-					permiss: '1',
 				},
 				component: () => import(/* webpackChunkName: "table" */ '@/views/home/index.vue'),
 			},

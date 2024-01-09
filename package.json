@@ -19,6 +19,7 @@
 		"element-plus": "^2.4.4",
 		"js-cookie": "^3.0.5",
 		"normalize.css": "^8.0.1",
+		"nprogress": "^0.2.0",
 		"pinia": "^2.1.7",
 		"vue": "^3.3.11",
 		"vue-router": "4",

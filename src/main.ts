@@ -5,6 +5,8 @@ import preview from 'vue3-image-preview'
 
 import router from './router'
 
+import '@/permission'
+
 import 'normalize.css/normalize.css'
 import '@/styles/index.scss'
 

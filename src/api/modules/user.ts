@@ -56,3 +56,10 @@ export function reqCheck(data: any) {
 		data,
 	})
 }
+
+export function logout() {
+	return request({
+		url: '/crm/sys/logout',
+		method: 'post',
+	})
+}
