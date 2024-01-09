@@ -298,11 +298,11 @@ export default {
 		end: function () {
 			// eslint-disable-next-line @typescript-eslint/no-this-alias
 			let _this = this
-			this.endMovetime = +new Date()
+			this.endMovetime = +new Date() as string
 			// 判断是否重合
 			if (this.status && this.isEnd == false) {
 				let moveLeftDistance = parseInt((this.moveBlockLeft || '').replace('px', ''))
-				moveLeftDistance = (moveLeftDistance * 310) / parseInt(this.setSize.imgWidth)
+				moveLeftDistance = (moveLeftDistance * 310) / parseInt(this.setSize.imgWidth.toString())
 				const data = {
 					captchaType: this.captchaType,
 					pointJson: this.secretKey
@@ -323,7 +323,6 @@ export default {
 							setTimeout(() => {
 								// NOTE this.$parent.clickShow = false
 								this.$emit('changeData', { dataKey: 'clickShow', data: false })
-								console.log(2222)
 								this.refresh()
 							}, 1500)
 						}

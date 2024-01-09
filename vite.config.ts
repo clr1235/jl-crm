@@ -4,6 +4,8 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+// 打包分析工具
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +16,13 @@ export default defineConfig({
 		}),
 		Components({
 			resolvers: [ElementPlusResolver()],
+		}),
+		visualizer({
+			// gzipSize: true,
+			// brotliSize: true,
+			// emitFile: false,
+			// filename: 'test.html', //分析图生成的文件名
+			// open: true, //如果存在本地服务端口，将在打包后自动展示
 		}),
 	],
 	server: {
@@ -55,6 +64,8 @@ export default defineConfig({
 	},
 	// 构建
 	build: {
+		emptyOutDir: true, // 清除dist目录
+
 		chunkSizeWarningLimit: 2000, // 消除打包大小超过500kb警告
 		minify: 'terser', // Vite 2.6.x 以上需要配置 minify: "terser", terserOptions 才能生效
 		terserOptions: {
@@ -73,15 +84,23 @@ export default defineConfig({
 				// 创建自定义的公共 chunk
 				manualChunks: {
 					vue: ['vue', 'pinia', 'vue-router'],
-					elementIcons: ['@element-plus/icons-vue'],
+					// elementIcons: ['@element-plus/icons-vue'],
 				},
 				// js和css文件夹分离
 				// 对代码分割中产生的 chunk 自定义命名，其值也可以是一个函数，对每个 chunk 调用以返回匹配模式
-				chunkFileNames: 'dist/js/[name]-[hash].js',
+				chunkFileNames: 'static/js/[name]-[hash].js',
 				// 用于指定 chunks 的入口文件模式，其值也可以是一个函数，对每个入口 chunk 调用以返回匹配模式
-				entryFileNames: 'dist/js/[name]-[hash].js',
+				entryFileNames: 'static/js/[name]-[hash].js',
 				// 自定义构建结果中的静态资源名称，或者值为一个函数，对每个资源调用以返回匹配模式
-				assetFileNames: 'dist/[ext]/[name]-[hash].[ext]',
+				assetFileNames: (assetInfo) => {
+					if (assetInfo.type === 'asset' && /\.(jpe?g|png|gif|svg)$/i.test(assetInfo.name)) {
+						return 'static/img/[name].[hash][ext]'
+					}
+					if (assetInfo.type === 'asset' && /\.(ttf|woff|woff2|eot)$/i.test(assetInfo.name)) {
+						return 'static/fonts/[name].[hash][ext]'
+					}
+					return 'static/[ext]/[name]-[hash].[ext]'
+				},
 			},
 		},
 	},

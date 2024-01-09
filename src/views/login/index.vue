@@ -179,6 +179,7 @@ const changeFavicon = (url: any) => {
 const handleLogin = async (formEl: any) => {
 	if (!formEl) return
 	await formEl.validate((valid: boolean) => {
+		console.log(valid, 'lslsl-----')
 		if (valid) {
 			verifyRef.value.show()
 		} else {
@@ -228,6 +229,7 @@ const handleCodeSuccess = (captchaVerification: any) => {
 					if (code === 0) {
 						rememberUserName()
 						// 登录之后跳转到首页
+						console.log('登录=====')
 						router.push({ name: 'home' })
 					} else if (code === 10007) {
 						loading.value = false

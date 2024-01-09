@@ -22,8 +22,8 @@ function handleStaticComponent(router: any, dynamicRoutes: any) {
  */
 function addDynamicRoutes(menuList = [], routes: any = []) {
 	const pageComponents = import.meta.glob('@/views/*/*.vue')
-	const pageComponentsKeys = Object.keys(pageComponents)
-	// console.log(routes, 'routes-s-s-s-s-', pageComponentsKeys)
+	const pageComponentsKeys = Object.keys(pageComponents).filter((item) => !item.includes('layout'))
+	console.log(routes, 'routes-s-s-s-s-', pageComponentsKeys)
 	// 递归处理children下的路由
 	function recursion(obj: any) {
 		if (obj.children) {
@@ -91,14 +91,17 @@ router.beforeEach((to, from, next) => {
 		next()
 	} else {
 		if (getToken()) {
+			console.log(66666)
 			// 存在登录ssid
 			if (to.path === '/login' || to.path === '/login/') {
+				console.log(55555)
 				next({ path: '/' })
 				NProgress.done()
 			} else {
+				console.log(4444)
 				if (!permissionStore.hasRouter) {
+					console.log(88888)
 					// 没有路由 去获取路由数据
-
 					userStore.GetUserInfo().then((res: any) => {
 						console.log(res, '=-2-2-2-2-2')
 						// 拉取user_info
@@ -111,6 +114,7 @@ router.beforeEach((to, from, next) => {
 						})
 					})
 				} else {
+					console.log(33333)
 					next()
 					!menuStore.isShowUrlParams && resetUrl() //重置地址栏
 				}

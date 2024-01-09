@@ -35,8 +35,8 @@
 						'line-height': '20px',
 						'border-radius': '50%',
 						position: 'absolute',
-						top: parseInt(tempPoint.y - 10) + 'px',
-						left: parseInt(tempPoint.x - 10) + 'px',
+						top: parseInt((tempPoint.y - 10).toString()) + 'px',
+						left: parseInt((tempPoint.x - 10).toString()) + 'px',
 					}"
 				>
 					{{ index + 1 }}
@@ -182,7 +182,7 @@ export default {
 							: JSON.stringify(this.checkPosArr),
 						captchaToken: this.backToken,
 					}
-					reqCheck(data).then((res) => {
+					reqCheck(data).then((res: any) => {
 						res = res.data.data
 						if (res.repCode == '0000') {
 							this.barAreaColor = '#4cae4c'
